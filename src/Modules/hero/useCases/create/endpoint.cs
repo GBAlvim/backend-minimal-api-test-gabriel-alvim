@@ -1,4 +1,5 @@
 using backend_challenge.context;
+using backend_challenge.Modules.hero.repository;
 
 namespace backend_challenge.Modules.hero.useCases.create;
 
@@ -20,8 +21,10 @@ public class HeroReadOneEndPoint : Endpoint<Request, Response, Mapper>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         try
-        {
-            var useCase = new HeroCreateUseCase(_dbContext);
+        {   
+            IHero heroRepository = new HeroData(_dbContext);
+
+            var useCase = new HeroCreateUseCase(heroRepository);
 
             var newHero = Map.ToEntity(req);
 

@@ -2,88 +2,69 @@ namespace backend_challenge.Modules.refactor;
 
 public class Calculator
 {
-    private int x;
-    private int y;
-    private int z;
-    private int result;
-
-    public int Calc(int px, int py, int pz)
+    public int Calc(int x, int y, int z)
     {
-        x = px;
-        y = py;
-        z = pz;
-        result = 0;
+        int result = 0;
 
-        for (int i = 0; i < 100; i++)
-        {
-            if (x > y)
-            {
-                x += 10;
-            }
-            else if (y > z)
-            {
-                y -= 5;
-            }
-            else
-            {
-                z += 15;
-            }
+        AdjustValues(ref x, ref y, ref z);
+        result += ApplyFirstMultiplier(ref x, ref y, ref z);
 
-            switch (i)
-            {
-                case 0:
-                    if (x > y)
-                    {
-                        x *= 2;
-                        result += x;
-                    }
-                    else if (y > z)
-                    {
-                        y *= 3;
-                        result += y;
-                    }
-                    else
-                    {
-                        z *= 4;
-                        result += z;
-                    }
-                    break;
-                case 1:
-                    if (x < y)
-                    {
-                        x *= 2;
-                        result += x;
-                    }
-                    else if (y < z)
-                    {
-                        y *= 3;
-                        result += y;
-                    }
-                    else
-                    {
-                        z *= 4;
-                        result += z;
-                    }
-                    break;
-            }
-        }
-
-        for (int j = 0; j < 50; j++)
-        {
-            if (x > y)
-            {
-                x += 10;
-            }
-            else if (y > z)
-            {
-                y -= 5;
-            }
-            else
-            {
-                z += 15;
-            }
-        }
+        AdjustValues(ref x, ref y, ref z);
+        result += ApplySecondMultiplier(ref x, ref y, ref z);
 
         return result;
+    }
+
+    private void AdjustValues(ref int x, ref int y, ref int z)
+    {
+        if (x > y)
+        {
+            x += 10;
+            return;
+        }
+
+        if (y > z)
+        {
+            y -= 5;
+            return;
+        }
+
+        z += 15;
+    }
+
+    private int ApplyFirstMultiplier(ref int x, ref int y, ref int z)
+    {
+        if (x > y)
+        {
+            x *= 2;
+            return x;
+        }
+
+        if (y > z)
+        {
+            y *= 3;
+            return y;
+        }
+
+        z *= 4;
+        return z;
+    }
+
+    private int ApplySecondMultiplier(ref int x, ref int y, ref int z)
+    {
+        if (x < y)
+        {
+            x *= 2;
+            return x;
+        }
+
+        if (y < z)
+        {
+            y *= 3;
+            return y;
+        }
+
+        z *= 4;
+        return z;
     }
 }

@@ -19,7 +19,8 @@ public class HeroCreateUseCaseTests
         };
 
         await using var _dbContext = new MockDb().CreateDbContext();
-        var sut = new HeroCreateUseCase(_dbContext);
+        IHero heroRepository = new HeroData(_dbContext);
+        var sut = new HeroCreateUseCase(heroRepository);
 
         // Act
         var result = await sut.exec(testHero);
@@ -44,7 +45,10 @@ public class HeroCreateUseCaseTests
         };
 
         await using var _dbContext = new MockDb().CreateDbContext();
-        var sut = new HeroCreateUseCase(_dbContext);
+        
+        IHero heroRepository = new HeroData(_dbContext);
+
+        var sut = new HeroCreateUseCase(heroRepository);
 
         // Act and Assert
         var exception = await Assert.ThrowsAsync<Microsoft.EntityFrameworkCore.DbUpdateException>(() => sut.exec(testHero));

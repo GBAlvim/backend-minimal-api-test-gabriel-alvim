@@ -22,7 +22,9 @@ public class HeroUpdateUseCaseTests
         await _dbContext.Heroes.AddAsync(testHero);
         await _dbContext.SaveChangesAsync();
 
-        var sut = new HeroUpdateUseCase(_dbContext);
+        IHero heroRepository = new HeroData(_dbContext);
+
+        var sut = new HeroUpdateUseCase(heroRepository);
 
         // Modificar a entidade
         testHero.name = "Batman";
