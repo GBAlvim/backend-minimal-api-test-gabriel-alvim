@@ -9,7 +9,7 @@ public class HeroUpdateEndPoint : Endpoint<Request, Response, Mapper>
 
     public override void Configure()
     {
-        Put("heroes");
+        Put("heroes/{id}");
         Summary(s => {
             s.Summary = "Update the hero";
             s.Description = "Update the whole object with all the provided parameters.";
