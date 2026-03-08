@@ -8,7 +8,7 @@ public class MockDb : IDbContextFactory<AppDbContext>
     public AppDbContext CreateDbContext()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseInMemoryDatabase($"InMemoryTestDb-{DateTime.Now.ToFileTimeUtc()}")
+            .UseInMemoryDatabase($"InMemoryTestDb-{Guid.NewGuid()}")
             .Options;
         return new AppDbContext(options);
     }
