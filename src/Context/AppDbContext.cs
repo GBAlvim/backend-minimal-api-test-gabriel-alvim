@@ -21,6 +21,15 @@ public class AppDbContext : DbContext
         mb.Entity<Hero>()
             .Property(hero => hero.name)
             .IsRequired();
+
+        mb.Entity<Hero>()
+            .HasOne(h => h.UniformColor)
+            .WithMany(u => u.Heroes)
+            .HasForeignKey(h => h.UniformColorId);
+
+        mb.Entity<Hero>()
+            .HasMany(h => h.Superpowers)
+            .WithMany(s => s.Heroes);
         #endregion
 
         #region Superpower

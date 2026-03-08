@@ -1,4 +1,5 @@
 using backend_challenge.context;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend_challenge.Modules.hero.repository;
 
@@ -22,10 +23,21 @@ public class HeroData : IHero
         return entity;
     }
 
-    public async Task<List<Hero>> readList()
+    public async Task<List<Hero>> readList(string? name = null, string? superpower = null)
     {
-        var query = _context.Heroes;
+        var query = _context.Heroes
+            .Include(h => h.UniformColor)
+            .Include(h => h.Superpowers)
+            .AsQueryable();
 
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            query = query.Where(h => h.name.Contains(name));
+        }
+        if (!string.IsNullOrWhiteSpace(superpower))
+        {
+            query = query.Where(h => h.Superpowers.Any(s => s.name.Contains(superpower)));
+        }
         return await query.ToListAsync();
     }
 

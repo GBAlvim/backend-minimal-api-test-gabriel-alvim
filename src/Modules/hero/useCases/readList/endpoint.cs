@@ -3,9 +3,9 @@ using backend_challenge.Modules.hero.repository;
 
 namespace backend_challenge.Modules.hero.useCases.readList;
 
-public class HeroReadListEndPoint : EndpointWithoutRequest<List<Hero>>
+public class HeroReadListEndPoint : Endpoint<Request, List<Response>, Mapper>
 {
-    public AppDbContext _dbContext { get; set; }
+    public AppDbContext _dbContext { get; set; } = null!;
 
     public override void Configure()
     {
@@ -18,14 +18,17 @@ public class HeroReadListEndPoint : EndpointWithoutRequest<List<Hero>>
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(CancellationToken ct)
+    public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         try
         {
-            var useCase = new HeroReadListUseCase(_dbContext);
-            var response = await useCase.exec();
+            IHero heroRepository = new HeroData(_dbContext);
+            
+            var useCase = new HeroReadListUseCase(heroRepository);
+            var heroes = await useCase.exec(req);
+            var response = heroes.Select(h => Map.FromEntity(h)).ToList();
           
-            await SendAsync(response);
+            await SendAsync(response, cancellation: ct);
         }
         catch (Exception e)
         {

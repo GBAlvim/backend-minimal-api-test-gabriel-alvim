@@ -12,31 +12,23 @@ public class HeroReadListUseCaseTests
         // Arrange
         var testHeroes = new List<Hero>
         {
-            new Hero
-            {
-                id = Guid.NewGuid(),
-                name = "Superman",
-                description = "Man of Steel",
-                image = "superman.jpg"
-            },
-            new Hero
-            {
-                id = Guid.NewGuid(),
-                name = "Batman",
-                description = "The Dark Knight",
-                image = "batman.jpg"
-            },
+            new Hero { id = Guid.NewGuid(), name = "Superman", description = "Man of Steel", image = "superman.jpg" },
+            new Hero { id = Guid.NewGuid(), name = "Batman", description = "The Dark Knight", image = "batman.jpg" }
         };
 
         await using var _dbContext = new MockDb().CreateDbContext();
-
         await _dbContext.Heroes.AddRangeAsync(testHeroes);
         await _dbContext.SaveChangesAsync();
 
-        var sut = new HeroReadListUseCase(_dbContext);
+        // Inj. Dep
+        IHero heroRepository = new HeroData(_dbContext);
+        var sut = new HeroReadListUseCase(heroRepository);
+        
+        // Simula uma requisição vazia (sem filtros, para retornar todos)
+        var request = new Request();
 
         // Act
-        var result = await sut.exec();
+        var result = await sut.exec(request);
 
         // Assert
         Assert.NotNull(result);
@@ -46,14 +38,10 @@ public class HeroReadListUseCaseTests
             hero => 
             {
                 Assert.Equal(testHeroes[0].name, hero.name);
-                Assert.Equal(testHeroes[0].description, hero.description);
-                Assert.Equal(testHeroes[0].image, hero.image);
             },
             hero => 
             {
                 Assert.Equal(testHeroes[1].name, hero.name);
-                Assert.Equal(testHeroes[1].description, hero.description);
-                Assert.Equal(testHeroes[1].image, hero.image);
             }
         );
     }

@@ -5,15 +5,15 @@ namespace backend_challenge.Modules.hero.useCases.readList;
 
 public class HeroReadListUseCase
 {
-    private readonly IHero _data;
+    private readonly IHero _heroData;
 
-    public HeroReadListUseCase(AppDbContext _context)
+    public HeroReadListUseCase(IHero heroData)
     {
-        _data = new HeroData(_context);
+        _heroData = heroData;
     }
 
-    public async Task<List<Hero>> exec()
+    public async Task<List<Hero>> exec(Request req)
     {
-        return await _data.readList();
+        return await _heroData.readList(req.name, req.superpower);
     }
 }
