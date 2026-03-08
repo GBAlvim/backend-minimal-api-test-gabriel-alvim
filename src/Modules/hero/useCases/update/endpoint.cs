@@ -1,10 +1,11 @@
 using backend_challenge.context;
+using backend_challenge.Modules.hero.repository;
 
 namespace backend_challenge.Modules.hero.useCases.update;
 
 public class HeroUpdateEndPoint : Endpoint<Request, Response, Mapper>
 {
-    public AppDbContext _dbContext { get; init; }
+    public AppDbContext _dbContext { get; init; } = null!;
 
     public override void Configure()
     {
@@ -20,14 +21,25 @@ public class HeroUpdateEndPoint : Endpoint<Request, Response, Mapper>
     {
         try
         {
+            IHero heroRepository = new HeroData(_dbContext);
+
+            var existingHero = await heroRepository.readOne(req.id);
+            
+            if (existingHero is null)
+            {
+                await SendNotFoundAsync(ct);
+                return;
+            }
+
+            var useCase = new HeroUpdateUseCase(heroRepository);
             var updateData = Map.ToEntity(req);
+            
+            updateData.id = req.id; 
 
-            var useCase = new HeroUpdateUseCase(_dbContext);
             var updatedHero = await useCase.exec(updateData);
-
             var response = Map.FromEntity(updatedHero);
 
-            await SendAsync(response);
+            await SendAsync(response, cancellation: ct);
         }
         catch (System.Exception e)
         {

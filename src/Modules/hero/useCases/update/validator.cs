@@ -8,8 +8,14 @@ public class Validator : Validator<Request>
             .NotEmpty()
             .WithMessage("Parameter \"id\" is required!");
 
+
         RuleFor(request => request.name)
             .NotEmpty()
             .WithMessage("Parameter \"name\" is required!");
+
+
+        RuleFor(request => request.description)
+            .NotEmpty()
+            .WithMessage("Parameter \"description\" is required!");    
     }
 }

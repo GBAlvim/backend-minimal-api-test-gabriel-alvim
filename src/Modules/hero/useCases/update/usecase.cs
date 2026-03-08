@@ -7,9 +7,9 @@ public class HeroUpdateUseCase
 {
     private readonly IHero _heroData;
 
-    public HeroUpdateUseCase(AppDbContext _databaseContext)
+    public HeroUpdateUseCase(IHero heroData)
     {
-        _heroData = new HeroData(_databaseContext);
+        _heroData = heroData;
     }
 
     public async Task<Hero> exec(Hero entity)
