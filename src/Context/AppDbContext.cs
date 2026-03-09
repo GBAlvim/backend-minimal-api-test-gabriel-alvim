@@ -1,6 +1,7 @@
 using backend_challenge.Modules.hero.repository;
 using backend_challenge.Modules.superpower.repository;
 using backend_challenge.Modules.uniformColor.repository;
+using backend_challenge.Modules.todo.repository;
 
 namespace backend_challenge.context;
 
@@ -11,6 +12,7 @@ public class AppDbContext : DbContext
     public DbSet<Hero>? Heroes { get; set; }
     public DbSet<Superpower>? SuperPowers { get; set; }
     public DbSet<UniformColor>? UniformColors { get; set; }
+    public DbSet<TodoItem> Todos { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder mb)
     {
