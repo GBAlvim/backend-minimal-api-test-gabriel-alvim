@@ -3,7 +3,7 @@ using backend_challenge.Modules.todo.repository;
 
 namespace backend_challenge.Modules.todo.useCases.complete;
 
-public class TodoCompleteEndpoint : Endpoint<Request, Response, Mapper>
+public class TodoCompleteEndpoint : EndpointWithoutRequest<Response, Mapper>
 {
     public AppDbContext _dbContext { get; set; } = null!;
 
@@ -18,12 +18,13 @@ public class TodoCompleteEndpoint : Endpoint<Request, Response, Mapper>
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(Request req, CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken ct)
     {
+        var id = Route<Guid>("id");
+
         ITodo todoRepository = new TodoData(_dbContext);
         var useCase = new TodoCompleteUseCase(todoRepository);
-
-        var completedTodo = await useCase.exec(req.id);
+        var completedTodo = await useCase.exec(id);
 
         if (completedTodo is null)
         {

@@ -20,7 +20,7 @@ public class HeroCreateUseCaseTests
 
         await using var _dbContext = new MockDb().CreateDbContext();
         IHero heroRepository = new HeroData(_dbContext);
-        var sut = new HeroCreateUseCase(heroRepository);
+        var sut = new HeroCreateUseCase(heroRepository, _dbContext);
 
         // Act
         var result = await sut.exec(testHero);
@@ -48,10 +48,38 @@ public class HeroCreateUseCaseTests
         
         IHero heroRepository = new HeroData(_dbContext);
 
-        var sut = new HeroCreateUseCase(heroRepository);
+        var sut = new HeroCreateUseCase(heroRepository, _dbContext);
 
         // Act and Assert
         var exception = await Assert.ThrowsAsync<Microsoft.EntityFrameworkCore.DbUpdateException>(() => sut.exec(testHero));
         Assert.Contains("Required properties '{'name'}' are missing for the instance of entity type 'Hero'", exception.Message);
+    }
+
+    [Fact]
+    public async Task Exec_ShouldAssignOneUniformColorAndAtLeastOneSuperpower()
+    {
+        // Arrange
+        await using var _dbContext = new MockDb().CreateDbContext();
+        
+        _dbContext.Database.EnsureCreated(); 
+
+        var testHero = new Hero
+        {
+            id = Guid.NewGuid(),
+            name = "Flash",
+            description = "Fastest man alive",
+            image = "flash.jpg"
+        };
+
+        IHero heroRepository = new HeroData(_dbContext);
+        var sut = new HeroCreateUseCase(heroRepository, _dbContext);
+
+        // Act
+        var createdHero = await sut.exec(testHero);
+
+        // Assert
+        Assert.NotNull(createdHero.UniformColorId); 
+        Assert.NotNull(createdHero.UniformColor);   
+        Assert.True(createdHero.Superpowers.Count >= 1); 
     }
 }

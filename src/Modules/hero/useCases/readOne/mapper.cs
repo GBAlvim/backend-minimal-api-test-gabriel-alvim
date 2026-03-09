@@ -9,6 +9,8 @@ public class Mapper : ResponseMapper<Response, Hero>
         id = entity.id,
         name = entity.name,
         description = entity.description,
-        image = entity.image
+        image = entity.image,
+        uniformColor = entity.UniformColor?.name,
+        superpowers = entity.Superpowers.Select(s => s.name).ToList()
     };
 }

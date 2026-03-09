@@ -24,7 +24,7 @@ public class HeroReadOneEndPoint : Endpoint<Request, Response, Mapper>
         {   
             IHero heroRepository = new HeroData(_dbContext);
 
-            var useCase = new HeroCreateUseCase(heroRepository);
+            var useCase = new HeroCreateUseCase(heroRepository, _dbContext);
 
             var newHero = Map.ToEntity(req);
 

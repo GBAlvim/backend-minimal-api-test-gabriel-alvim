@@ -8,7 +8,7 @@ public class HeroDeleteEndpoint : Endpoint<Request, Response>
 
     public override void Configure()
     {
-        Delete("heroes");
+        Delete("heroes/{id}");
         Summary(s =>
         {
             s.Summary = "Removes a \"Hero\"";

@@ -20,6 +20,13 @@ builder.Services.SwaggerDocument(o =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated(); 
+}
+
 app.UseAuthorization();
 app.UseFastEndpoints();
 

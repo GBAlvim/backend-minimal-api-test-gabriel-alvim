@@ -15,7 +15,8 @@ public class TodoCompleteUseCaseTests
             id = Guid.NewGuid(),
             name = "Finish the Test",
             status = TodoStatus.Pending,
-            creationDate = DateTime.UtcNow
+            creationDate = DateTime.UtcNow,
+            completionDate = null
         };
 
         await using var _dbContext = new MockDb().CreateDbContext();
@@ -30,7 +31,10 @@ public class TodoCompleteUseCaseTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(TodoStatus.Completed, result.status); // Mudou para Completed!
-        Assert.NotNull(result.completionDate); // Preencheu a data de conclusão!
+        Assert.Equal(TodoStatus.Completed, result.status);
+        Assert.NotNull(result.completionDate);
+        
+        var timeDifference = DateTime.UtcNow - result.completionDate.Value;
+        Assert.True(timeDifference.TotalSeconds < 2);
     }
 }

@@ -67,5 +67,6 @@ public class AppDbContext : DbContext
                 new UniformColor { id = Guid.NewGuid(), name = "White" }
             );
         #endregion
+        
     }
 }

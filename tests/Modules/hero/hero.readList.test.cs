@@ -20,11 +20,9 @@ public class HeroReadListUseCaseTests
         await _dbContext.Heroes.AddRangeAsync(testHeroes);
         await _dbContext.SaveChangesAsync();
 
-        // Inj. Dep
         IHero heroRepository = new HeroData(_dbContext);
-        var sut = new HeroReadListUseCase(heroRepository);
         
-        // Simula uma requisição vazia (sem filtros, para retornar todos)
+        var sut = new HeroReadListUseCase(heroRepository);        
         var request = new Request();
 
         // Act
@@ -44,5 +42,31 @@ public class HeroReadListUseCaseTests
                 Assert.Equal(testHeroes[1].name, hero.name);
             }
         );
+    }
+
+    [Fact]
+    public async Task Exec_ShouldReturnHero_WhenSearchingWithLowerCase()
+    {
+        // Arrange
+        await using var _dbContext = new MockDb().CreateDbContext();
+        
+        _dbContext.Database.EnsureCreated(); 
+        
+        var testHero = new Hero { id = Guid.NewGuid(), name = "Batman", description = "The Dark Knight" };
+        await _dbContext.Heroes.AddAsync(testHero);
+        await _dbContext.SaveChangesAsync();
+
+        IHero heroRepository = new HeroData(_dbContext);
+       
+        var sut = new HeroReadListUseCase(heroRepository);       
+        var request = new Request { name = "batman" };
+
+        // Act
+        var result = await sut.exec(request);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Single(result);
+        Assert.Equal("Batman", result.First().name);
     }
 }
